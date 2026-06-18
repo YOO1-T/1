@@ -62,7 +62,7 @@
             word-break: keep-all;
         }
 
-        /* 아이패드 화면 하단에 쾅 박아둘 AR 버튼 */
+        /* 화면 최상단 고정 AR 버튼 */
         .ar-activate-btn {
             position: absolute;
             bottom: 50px;
@@ -98,14 +98,14 @@
 
     <model-viewer 
         id="viewer"
-        src="https://developer.apple.com/augmented-reality/quick-look/models/biplane/biplane.glb" 
-        ios-src="https://developer.apple.com/augmented-reality/quick-look/models/biplane/biplane.usdz"
-        alt="전통 다리미 인두 3D 모델"
+        src="https://raw.githubusercontent.com/kwon-dev/3d-models/main/indu.glb"
+        alt="조선시대 전통 다리미 인두 3D 모델"
         ar 
-        ar-modes="quick-look scene-viewer webxr" 
+        ar-modes="scene-viewer quick-look webxr" 
         camera-controls 
         touch-action="none"
-        shadow-intensity="1.5">
+        shadow-intensity="1.5"
+        auto-rotate>
     </model-viewer>
 
     <button class="ar-activate-btn" id="custom-ar-button">
@@ -116,7 +116,7 @@
         document.getElementById('custom-ar-button').addEventListener('click', () => {
             const viewer = document.getElementById('viewer');
             if (viewer) {
-                viewer.activateAR(); // AR 카메라 실행
+                viewer.activateAR();
             }
         });
     </script>
