@@ -2,122 +2,195 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>초등 역사·전통 과학 AR 체험 - 조선의 다리미 '인두'</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>실시간 카메라 전통 AR - 조선의 인두</title>
     
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    
     <style>
-        * {
-            box-sizing: border-box;
-        }
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f7f6f2;
             overflow: hidden;
+            font-family: 'Malgun Gothic', sans-serif;
         }
 
-        model-viewer {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            --poster-color: transparent;
-        }
-
-        /* 상단 교육용 안내 카드 */
-        .edu-banner {
+        /* 비바샘 스타일의 상단 교육용 팝업 안내창 */
+        .ar-hud-banner {
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            padding: 16px 20px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(140, 98, 57, 0.15);
-            border: 1px solid rgba(140, 98, 57, 0.2);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 14px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             text-align: center;
-            width: 88%;
-            max-width: 420px;
-            z-index: 100;
+            width: 85%;
+            max-width: 400px;
+            z-index: 9999;
+            border: 1px solid rgba(140, 98, 57, 0.3);
         }
-        .edu-banner h1 {
-            margin: 0 0 6px 0;
-            font-size: 1.25rem;
+        .ar-hud-banner h1 {
+            margin: 0 0 4px 0;
+            font-size: 1.15rem;
             color: #5c3f21;
-            font-weight: bold;
         }
-        .edu-banner p {
+        .ar-hud-banner p {
             margin: 0;
-            font-size: 0.88rem;
-            color: #444;
-            line-height: 1.45;
-            word-break: keep-all;
+            font-size: 0.85rem;
+            color: #333;
+            line-height: 1.4;
         }
 
-        /* 화면 최상단 고정 AR 버튼 */
-        .ar-activate-btn {
+        /* 화면 중앙 조준점 (바닥 인식 유도) */
+        .reticle-guide {
             position: absolute;
-            bottom: 50px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background-color: #8c6239; 
-            color: #ffffff !important;
-            border: none;
-            border-radius: 30px;
-            padding: 18px 40px;
-            font-size: 1.15rem;
-            font-weight: bold;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
-            cursor: pointer;
-            z-index: 9999 !important;
-            display: block !important;
-            visibility: visible !important;
-            white-space: nowrap;
-            text-align: center;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 3px dashed rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            z-index: 999;
+            pointer-events: none;
         }
-        .ar-activate-btn:active {
-            background-color: #5c3f21;
-            transform: translateX(-50%) scale(0.95);
+        .reticle-guide::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
 
-    <div class="edu-banner">
-        <h1>🔍 AR로 만나는 조상의 지혜: '인두'</h1>
-        <p>화로에 달구어 한복의 깃이나 동정처럼 좁은 구석을 다리던 옛날 다리미입니다. 교실 바닥이나 책상에 직접 띄워 관찰해 보세요!</p>
+    <div class="ar-hud-banner">
+        <h1>🔍 현실 공간에서 만나는 '인두'</h1>
+        <p>카메라로 바닥이나 책상을 비추고 화면을 터치해 보세요! 교실 안에 조선시대 인두가 나타납니다.</p>
     </div>
 
-    <model-viewer 
-        id="viewer"
-        src="https://raw.githubusercontent.com/kwon-dev/3d-models/main/indu.glb"
-        alt="조선시대 전통 다리미 인두 3D 모델"
-        ar 
-        ar-modes="scene-viewer quick-look webxr" 
-        camera-controls 
-        touch-action="none"
-        shadow-intensity="1.5"
-        auto-rotate>
-    </model-viewer>
-
-    <button class="ar-activate-btn" id="custom-ar-button">
-        ✨ 교실 책상에 인두 띄우기 (AR)
-    </button>
+    <div class="reticle-guide"></div>
 
     <script>
-        document.getElementById('custom-ar-button').addEventListener('click', () => {
-            const viewer = document.getElementById('viewer');
-            if (viewer) {
-                viewer.activateAR();
+        // --- 1. 기본 3D 공간 및 카메라 배경 세팅 ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha: true로 배경을 투명하게 만듦
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // 조명 추가 (물체가 입체감 있게 보이도록 고안)
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        light.position.set(0.5, 1, 0.25);
+        scene.add(light);
+
+        // --- 2. 스마트폰 진짜 카메라 화면 받아오기 (핵심!) ---
+        const video = document.createElement('video');
+        video.setAttribute('autoplay', '');
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');
+
+        // 기기 뒷면 카메라 요청 구동부
+        const constraints = {
+            video: { facingMode: { exact: "environment" } }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+            
+            // 카메라 화면을 3D 공간의 배경 텍스처로 대입 (배경이 현실 카메라 화면이 됨)
+            const backgroundTexture = new THREE.VideoTexture(video);
+            scene.background = backgroundTexture;
+        }).catch(function(err) {
+            // 아이패드/PC 테스트용 대체 (앞면 카메라 혹은 권한 미허용시)
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+                scene.background = new THREE.VideoTexture(video);
+            }).catch(() => {
+                alert("카메라 권한이 필요합니다. 사파리/크롬 설정에서 카메라를 허용해 주세요.");
+            });
+        });
+
+        // --- 3. 진짜 '인두' 모양의 입체 가상 오브젝트 제작 ---
+        // 웹 유물 소스가 불안정할 때를 대비하여 전통 무쇠 인두 형태의 3D 형태 구조를 직접 코드로 빚었습니다.
+        const induGroup = new THREE.Group();
+
+        // 인두 날 (삼각형 모양의 쇠뭉치 부분)
+        const bladeGeo = new THREE.ConeGeometry(0.15, 0.3, 4); // 뾰족한 무쇠 코일 형태
+        const ironMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8, metalness: 0.7 }); // 무쇠 느낌 재질
+        const blade = new THREE.Mesh(bladeGeo, ironMaterial);
+        blade.rotation.x = Math.PI / 2;
+        induGroup.add(blade);
+
+        // 인두 손잡이 연결대 (얇은 쇠막대)
+        const rodGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.4, 8);
+        const rod = new THREE.Mesh(rodGeo, ironMaterial);
+        rod.position.z = -0.3;
+        rod.rotation.x = Math.PI / 2;
+        induGroup.add(rod);
+
+        // 나무 손잡이 부분
+        const handleGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.2, 12);
+        const woodMaterial = new THREE.MeshStandardMaterial({ color: 0x8c6239, roughness: 0.6 }); // 나무 재질
+        const handle = new THREE.Mesh(handleGeo, woodMaterial);
+        handle.position.z = -0.6;
+        handle.rotation.x = Math.PI / 2;
+        induGroup.add(handle);
+
+        // 처음에는 안 보이다가 터치하면 나타나도록 세팅
+        induGroup.position.set(0, -0.2, -1); // 카메라 앞 1m 지점 바닥 지향
+        induGroup.visible = false;
+        scene.add(induGroup);
+
+        // --- 4. 화면 터치 시 현실에 인두 배치하는 인터랙션 ---
+        window.addEventListener('click', () => {
+            // 화면을 터치하면 가이드라인 중심 자리에 인두 오브젝트를 출현시키고 배치함
+            induGroup.visible = true;
+            
+            // 터치할 때마다 제자리에서 살짝 튀는 애니메이션 효과 효과
+            induGroup.scale.set(0.1, 0.1, 0.1);
+            let s = 0.1;
+            const animation = setInterval(() => {
+                if(s >= 1.0) clearInterval(animation);
+                s += 0.1;
+                induGroup.scale.set(s, s, s);
+            }, 20);
+        });
+
+        // --- 5. 매 프레임 실시간 렌더링 화면 갱신 ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 인두가 배치되면 학생들이 사방에서 관찰할 수 있도록 스스로 부드럽게 회전함
+            if (induGroup.visible) {
+                induGroup.rotation.y += 0.01;
             }
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 화면 크기 바뀔 때 대응
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
