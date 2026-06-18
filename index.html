@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* 3D 뷰어 자체를 화면 전체로 채우되, 버튼이 완전히 위에 뜨도록 설정 */
         model-viewer {
             width: 100vw;
             height: 100vh;
@@ -47,7 +46,7 @@
             text-align: center;
             width: 88%;
             max-width: 420px;
-            z-index: 100; /* 안내창도 최상단 */
+            z-index: 100;
         }
         .edu-banner h1 {
             margin: 0 0 6px 0;
@@ -63,7 +62,7 @@
             word-break: keep-all;
         }
 
-        /* 📌 3D 로딩 상태와 상관없이 '무조건' 화면 맨 위에 고정되는 버튼 */
+        /* 아이패드 화면 하단에 쾅 박아둘 AR 버튼 */
         .ar-activate-btn {
             position: absolute;
             bottom: 50px;
@@ -78,37 +77,15 @@
             font-weight: bold;
             box-shadow: 0 8px 25px rgba(0,0,0,0.35);
             cursor: pointer;
-            z-index: 9999 !important; /* 그 어떤 요소보다 무조건 위에 뜸 */
-            display: block !important; /* 숨김 처리 절대 불가능하게 강제 */
+            z-index: 9999 !important;
+            display: block !important;
             visibility: visible !important;
             white-space: nowrap;
-            text-decoration: none;
             text-align: center;
         }
         .ar-activate-btn:active {
             background-color: #5c3f21;
             transform: translateX(-50%) scale(0.95);
-        }
-
-        /* 로딩바 */
-        .progress-bar {
-            display: block;
-            width: 33%;
-            height: 4px;
-            background: rgba(0, 0, 0, 0.2);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 2px;
-            overflow: hidden;
-            z-index: 50;
-        }
-        .update-bar {
-            width: 0%;
-            height: 100%;
-            background: #8c6239;
-            transition: width 0.3s;
         }
     </style>
 </head>
@@ -121,21 +98,14 @@
 
     <model-viewer 
         id="viewer"
-        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-        ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
-        alt="조선시대 전통 다리미 인두 3D 모델"
+        src="https://developer.apple.com/augmented-reality/quick-look/models/biplane/biplane.glb" 
+        ios-src="https://developer.apple.com/augmented-reality/quick-look/models/biplane/biplane.usdz"
+        alt="전통 다리미 인두 3D 모델"
         ar 
-        ar-modes="scene-viewer quick-look webxr" 
+        ar-modes="quick-look scene-viewer webxr" 
         camera-controls 
         touch-action="none"
-        shadow-intensity="1.5"
-        shadow-softness="1"
-        environment-image="neutral"
-        exposure="1.2">
-        
-        <div class="progress-bar" slot="progress-bar">
-            <div class="update-bar"></div>
-        </div>
+        shadow-intensity="1.5">
     </model-viewer>
 
     <button class="ar-activate-btn" id="custom-ar-button">
@@ -143,8 +113,12 @@
     </button>
 
     <script>
-        // 로딩바 진행 스크립트
-        const onProgress = (event) => {
-            const progressBar = event.target.querySelector('.update-bar');
-            if(progressBar) {
-                progressBar.style.width = `${event.detail
+        document.getElementById('custom-ar-button').addEventListener('click', () => {
+            const viewer = document.getElementById('viewer');
+            if (viewer) {
+                viewer.activateAR(); // AR 카메라 실행
+            }
+        });
+    </script>
+</body>
+</html>
