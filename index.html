@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초등 역사·전통 과학 AR 체험 - 조선의 다리미 '인두'</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f7f6f2; /* 전통 느낌의 따뜻한 베이지 톤 */
+            overflow: hidden;
+        }
+
+        model-viewer {
+            width: 100vw;
+            height: 100vh;
+            --poster-color: transparent;
+        }
+
+        /* 상단 교육용 안내 카드 */
+        .edu-banner {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(5px);
+            padding: 16px 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(140, 98, 57, 0.15);
+            border: 1px solid rgba(140, 98, 57, 0.2);
+            text-align: center;
+            width: 88%;
+            max-width: 420px;
+            z-index: 10;
+        }
+        .edu-banner h1 {
+            margin: 0 0 6px 0;
+            font-size: 1.25rem;
+            color: #5c3f21;
+            font-weight: bold;
+        }
+        .edu-banner p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #444;
+            line-height: 1.45;
+            word-break: keep-all;
+        }
+
+        /* 하단 AR 진입 버튼 (스마트폰 기기에서만 자동 노출됨) */
+        .ar-activate-btn {
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #8c6239; 
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 32px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ar-activate-btn:active {
+            background-color: #5c3f21;
+            transform: translateX(-50%) scale(0.96);
+        }
+
+        /* 로딩 바 구현 */
+        .progress-bar {
+            display: block;
+            width: 33%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .update-bar {
+            width: 0%;
+            height: 100%;
+            background: #8c6239;
+            transition: width 0.3s;
+        }
+        model-viewer[data-loading] .progress-bar {
+            display: block;
+        }
+        model-viewer:not([data-loading]) .progress-bar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="edu-banner">
+        <h1>🔍 AR로 만나는 조상의 지혜: '인두'</h1>
+        <p>화로에 달구어 한복의 깃이나 동정처럼 좁은 구석을 다리던 옛날 다리미입니다. 교실 바닥이나 책상에 직접 띄워 관찰해 보세요!</p>
+    </div>
