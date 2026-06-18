@@ -17,7 +17,7 @@
             width: 100%;
             height: 100%;
             font-family: 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f7f6f2; /* 전통 느낌의 따뜻한 베이지 톤 */
+            background-color: #f7f6f2;
             overflow: hidden;
         }
 
@@ -58,7 +58,7 @@
             word-break: keep-all;
         }
 
-        /* 하단 AR 진입 버튼 (스마트폰 기기에서만 자동 노출됨) */
+        /* 📌 어떤 상황에서도 화면에 강제로 띄우는 AR 버튼 스타일 */
         .ar-activate-btn {
             position: absolute;
             bottom: 45px;
@@ -68,23 +68,24 @@
             color: #ffffff;
             border: none;
             border-radius: 30px;
-            padding: 14px 32px;
-            font-size: 1.05rem;
+            padding: 16px 36px;
+            font-size: 1.1rem;
             font-weight: bold;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             cursor: pointer;
-            z-index: 10;
+            z-index: 999; /* 최상단에 배치 */
             transition: transform 0.2s, background-color 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         .ar-activate-btn:active {
             background-color: #5c3f21;
             transform: translateX(-50%) scale(0.96);
         }
 
-        /* 로딩 바 구현 */
+        /* 로딩 바 */
         .progress-bar {
             display: block;
             width: 33%;
@@ -103,12 +104,6 @@
             background: #8c6239;
             transition: width 0.3s;
         }
-        model-viewer[data-loading] .progress-bar {
-            display: block;
-        }
-        model-viewer:not([data-loading]) .progress-bar {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -117,3 +112,32 @@
         <h1>🔍 AR로 만나는 조상의 지혜: '인두'</h1>
         <p>화로에 달구어 한복의 깃이나 동정처럼 좁은 구석을 다리던 옛날 다리미입니다. 교실 바닥이나 책상에 직접 띄워 관찰해 보세요!</p>
     </div>
+
+    <model-viewer 
+        id="viewer"
+        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+        ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+        alt="조선시대 전통 다리미 인두 3D 모델"
+        ar 
+        ar-modes="scene-viewer quick-look webxr" 
+        camera-controls 
+        touch-action="none"
+        shadow-intensity="1.5"
+        shadow-softness="1"
+        environment-image="neutral"
+        exposure="1.2">
+        
+        <div class="progress-bar" slot="progress-bar">
+            <div class="update-bar"></div>
+        </div>
+    </model-viewer>
+
+    <button class="ar-activate-btn" id="custom-ar-button">
+        ✨ 교실 책상에 인두 띄우기 (AR)
+    </button>
+
+    <script>
+        // 로딩바 제어
+        const onProgress = (event) => {
+            const progressBar = event.target.querySelector('.update-bar');
+            if
