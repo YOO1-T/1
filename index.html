@@ -21,9 +21,14 @@
             overflow: hidden;
         }
 
+        /* 3D 뷰어 자체를 화면 전체로 채우되, 버튼이 완전히 위에 뜨도록 설정 */
         model-viewer {
             width: 100vw;
             height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
             --poster-color: transparent;
         }
 
@@ -33,7 +38,7 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(5px);
             padding: 16px 20px;
             border-radius: 20px;
@@ -42,7 +47,7 @@
             text-align: center;
             width: 88%;
             max-width: 420px;
-            z-index: 10;
+            z-index: 100; /* 안내창도 최상단 */
         }
         .edu-banner h1 {
             margin: 0 0 6px 0;
@@ -58,34 +63,34 @@
             word-break: keep-all;
         }
 
-        /* 📌 어떤 상황에서도 화면에 강제로 띄우는 AR 버튼 스타일 */
+        /* 📌 3D 로딩 상태와 상관없이 '무조건' 화면 맨 위에 고정되는 버튼 */
         .ar-activate-btn {
             position: absolute;
-            bottom: 45px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #8c6239; 
-            color: #ffffff;
+            color: #ffffff !important;
             border: none;
             border-radius: 30px;
-            padding: 16px 36px;
-            font-size: 1.1rem;
+            padding: 18px 40px;
+            font-size: 1.15rem;
             font-weight: bold;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
             cursor: pointer;
-            z-index: 999; /* 최상단에 배치 */
-            transition: transform 0.2s, background-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            z-index: 9999 !important; /* 그 어떤 요소보다 무조건 위에 뜸 */
+            display: block !important; /* 숨김 처리 절대 불가능하게 강제 */
+            visibility: visible !important;
             white-space: nowrap;
+            text-decoration: none;
+            text-align: center;
         }
         .ar-activate-btn:active {
             background-color: #5c3f21;
-            transform: translateX(-50%) scale(0.96);
+            transform: translateX(-50%) scale(0.95);
         }
 
-        /* 로딩 바 */
+        /* 로딩바 */
         .progress-bar {
             display: block;
             width: 33%;
@@ -97,6 +102,7 @@
             transform: translate(-50%, -50%);
             border-radius: 2px;
             overflow: hidden;
+            z-index: 50;
         }
         .update-bar {
             width: 0%;
@@ -137,24 +143,8 @@
     </button>
 
     <script>
-        // 로딩바 제어
+        // 로딩바 진행 스크립트
         const onProgress = (event) => {
             const progressBar = event.target.querySelector('.update-bar');
             if(progressBar) {
-                progressBar.style.width = `${event.detail.totalProgress * 100}%`;
-            }
-        };
-        document.getElementById('viewer').addEventListener('progress', onProgress);
-
-        // 📌 버튼을 누르면 기기의 AR 기능을 강제로 실행시키는 스크립트
-        document.getElementById('custom-ar-button').addEventListener('click', () => {
-            const viewer = document.getElementById('viewer');
-            if (viewer.canActivateAR) {
-                viewer.activateAR(); // AR 카메라 강제 구동
-            } else {
-                alert("현재 브라우저/기기는 AR 기능을 지원하지 않습니다. 안드로이드는 Chrome, 아이폰은 Safari 앱으로 다시 접속해 주세요!");
-            }
-        });
-    </script>
-</body>
-</html>
+                progressBar.style.width = `${event.detail
