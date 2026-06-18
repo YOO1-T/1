@@ -140,4 +140,21 @@
         // 로딩바 제어
         const onProgress = (event) => {
             const progressBar = event.target.querySelector('.update-bar');
-            if
+            if(progressBar) {
+                progressBar.style.width = `${event.detail.totalProgress * 100}%`;
+            }
+        };
+        document.getElementById('viewer').addEventListener('progress', onProgress);
+
+        // 📌 버튼을 누르면 기기의 AR 기능을 강제로 실행시키는 스크립트
+        document.getElementById('custom-ar-button').addEventListener('click', () => {
+            const viewer = document.getElementById('viewer');
+            if (viewer.canActivateAR) {
+                viewer.activateAR(); // AR 카메라 강제 구동
+            } else {
+                alert("현재 브라우저/기기는 AR 기능을 지원하지 않습니다. 안드로이드는 Chrome, 아이폰은 Safari 앱으로 다시 접속해 주세요!");
+            }
+        });
+    </script>
+</body>
+</html>
